@@ -199,6 +199,13 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--tomato)}
       </div>
     </div>
 
+    <!-- 추가 문의사항 (자유 입력) -->
+    <div class="sec">
+      <div class="lab">💬 추가 문의사항</div>
+      <textarea id="inquiry" rows="3" placeholder="더 궁금한 점이나 요청사항을 자유롭게 적어주세요 (선택)"></textarea>
+      <div class="hint">남겨주시면 담당자가 확인 후 함께 안내드려요.</div>
+    </div>
+
     <!-- 연락처 (견적 확인 전 입력) -->
     <div class="sec">
       <div class="lab">📞 연락처 정보</div>
@@ -312,6 +319,7 @@ document.getElementById('calc').onclick=()=>{
   const region=document.getElementById('region').value;
   const loc=document.querySelector('input[name=loc]:checked').value;
   const elec=document.querySelector('input[name=elec]:checked').value;
+  const inquiry=document.getElementById('inquiry').value.trim();
   const startH=+sH.value, endH=+eH.value;
   const extraHours=Math.max(0,(endH-startH)-BASE_HOURS);
   const faces=Object.keys(faceState).filter(k=>faceState[k]);
@@ -391,22 +399,27 @@ document.getElementById('calc').onclick=()=>{
   const echo = `<div class="echo">📞 ${cname} · ${cphone}<span>위 번호가 정확한지 한 번만 더 확인해 주세요</span></div>`;
 
   const amountText = exact ? won(subtotal) : (won(lo)+'~'+won(hi));
-  const optBits=[];
-  if(overFee) optBits.push('추가시간 '+extraHours+'시간');
-  if(xb) optBits.push('X배너 '+xbannerQty+'개');
-  if(stk) optBits.push('스티커 '+(stickerBundle*1000)+'장');
-  if(sector) optBits.push('섹터이동 '+exMap['섹터이동']);
-  if(monitor) optBits.push('모니터 '+exMap['모니터']);
-  if(gen) optBits.push('자가발전기');
-  const paidBan=bannerRows.filter(b=>!b.free).map(b=>b.f);
-  if(paidBan.length) optBits.push('현수막추가 '+paidBan.join('·'));
-  const alertText='[푸드트럭 견적 신청]\n담당자/회사: '+cname+'\n연락처: '+cphone
+  // ----- 카톡/문자 알림: 견적 안내 전체 내역을 텍스트로 -----
+  const btxt=[];
+  items.forEach(m=>btxt.push('- '+m.label+' '+m.qty+'인분: '+won(m.amount)));
+  if(travel) btxt.push('- 출장비('+region+'): '+won(travel));
+  if(gen) btxt.push('- 자가발전기: '+won(gen));
+  if(overFee) btxt.push('- 추가시간 '+extraHours+'시간: '+won(overFee));
+  if(xb) btxt.push('- X배너 '+xbannerQty+'개: '+won(xb));
+  if(stk) btxt.push('- 원형스티커 '+(stickerBundle*1000)+'장: '+won(stk));
+  if(sector) btxt.push('- 섹터이동 '+exMap['섹터이동']+'구역: '+won(sector));
+  if(monitor) btxt.push('- 모니터 '+exMap['모니터']+'대: '+won(monitor));
+  bannerRows.forEach(b=>btxt.push('- '+b.f+' 현수막: '+(b.free?'무료':won(20000))));
+  const alertText='[푸드트럭 견적 신청]'
+    +'\n담당자/회사: '+cname
+    +'\n연락처: '+cphone
     +'\n지역: '+region+(loc?(' / 장소 '+loc):'')
-    +'\n배식: '+startH+'~'+endH+'시'
-    +'\n메뉴: '+items.map(m=>m.label+' '+m.qty+'인분').join(', ')
-    +(optBits.length?('\n옵션: '+optBits.join(', ')):'')
-    +(offMenu?('\n추가요청: '+offMenu):'')
-    +'\n예상금액(VAT별도): '+amountText;
+    +'\n배식시간: '+startH+'시~'+endH+'시'
+    +'\n전기: '+(elec==='불가능'?'지원 불가 (자가발전기 사용)':'지원 가능')
+    +'\n\n[견적 내역]\n'+btxt.join('\n')
+    +(offMenu?('\n\n메뉴판외 요청: '+offMenu):'')
+    +(inquiry?('\n\n문의사항: '+inquiry):'')
+    +'\n\n■ 예상금액(VAT별도): '+amountText;
 
   const box=document.getElementById('result'); box.style.display='block';
   box.innerHTML=`<div class="quote">
