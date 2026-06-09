@@ -227,7 +227,7 @@ const CATS=['커피·음료','간식','디저트·베이커리','분식','식사
 const REGION={'서울·경기남부':100000,'경기북부·외곽':120000,'천안·아산':120000,'충청권':150000,'전라·강원·경상':150000,'제주·섬지역':1000000};
 const MIN_QTY=100;
 const GEN=50000, OVER_HOUR=30000, XBANNER=20000, STICKER=40000, SECTOR=50000, MONITOR=50000;
-const MIN_FOOD=600000, RANGE_LOW=1200000, RANGE_HIGH=1500000, VAT=0.10;
+const MIN_FOOD=600000, BASE_HOURS=3, RANGE_LOW=1200000, RANGE_HIGH=1500000, VAT=0.10;
 const won = n => Math.round(n).toLocaleString('ko-KR')+'원';
 const minQty = m => Math.max(MIN_QTY, m.m||0);
 
@@ -286,6 +286,7 @@ function toggleFace(btn,name){
 
 /* 계산 */
 document.getElementById('calc').onclick=()=>{
+ try{
   const menus=[]; let food=0; const adjusts=[];
   document.querySelectorAll('.mrow').forEach(r=>{
     const v=r.querySelector('.msel').value; if(v==='') return;
@@ -386,6 +387,11 @@ document.getElementById('calc').onclick=()=>{
     ${consult}${echo}
   </div>`;
   box.scrollIntoView({behavior:'smooth'});
+ }catch(err){
+  const eb=document.getElementById('result'); eb.style.display='block';
+  eb.innerHTML='<div class="flagcard"><h3>\u26A0\uFE0F 잠시 오류가 났어요</h3><p>'+(err&&err.message?err.message:String(err))+'</p><p style="margin-top:6px;font-size:12px;color:var(--muted)">이 메시지를 캡처해 알려주시면 바로 고쳐드릴게요.</p></div>';
+  eb.scrollIntoView({behavior:'smooth'});
+ }
 };
 </script>
 </body>
