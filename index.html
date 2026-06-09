@@ -330,23 +330,32 @@ document.getElementById('calc').onclick=()=>{
   const exMap={};
   document.querySelectorAll('.ex:checked').forEach(c=>{ const k=c.dataset.key; exMap[k]=parseInt(document.querySelector(`.qty[data-qty="${k}"]`).value,10)||1; });
 
-  // ----- 연락처 확인 (견적 보기 전 필수) -----
-  if(menus.length===0 && !offMenu){ alert('메뉴를 한 개 이상 선택하고 인분수를 입력해 주세요!'); return; }
-  // ----- 최소 음식값 미달 → 견적/알림 차단 (음식값 = 메뉴 합계, 출장비·기타 제외) -----
-  if(menus.length>0 && food<MIN_FOOD){
-    const mb=document.getElementById('result'); mb.style.display='block';
-    mb.innerHTML='<div class="consult"><b>\uD83C\uDF7D 최소 음식값 안내</b>'
-      +'음식값(메뉴 합계)이 최소 '+won(MIN_FOOD)+' 이상부터 견적이 가능해요.<br>'
-      +'현재 음식값: <b style="color:var(--tomato-deep)">'+won(food)+'</b> (출장비·기타비용 제외)<br>'
-      +'메뉴나 인분을 조금 더 추가하시면 바로 견적을 확인하실 수 있어요. 😊</div>';
-    mb.scrollIntoView({behavior:'smooth'});
-    return;
-  }
+  // ----- 입력 확인 -----
+  if(menus.length===0 && !offMenu && !inquiry){ alert('메뉴를 선택하시거나, 문의사항을 적어 주세요!'); return; }
   const cname=document.getElementById('cname').value.trim();
   const cphoneEl=document.getElementById('cphone'); const cphone=cphoneEl.value.trim();
   const digits=cphone.replace(/\D/g,'');
   if(!cname){ alert('담당자명 또는 회사명을 입력해 주세요.'); document.getElementById('cname').focus(); return; }
   if(!/^0\d{8,10}$/.test(digits)){ alert('연락처를 정확히 입력해 주세요. (예: 010-1234-5678)'); cphoneEl.focus(); return; }
+
+  // ----- 견적 가능 여부: 음식값(메뉴 합계) 60만 이상만 자동 견적, 그 외는 유선 상담으로 -----
+  const eligible = menus.length>0 && food>=MIN_FOOD;
+  if(!eligible){
+    const cinfo=['담당자/회사: '+cname, '연락처: '+cphone];
+    if(region) cinfo.push('지역: '+region+(loc?(' / 장소 '+loc):''));
+    if(menus.length) cinfo.push('메뉴: '+menus.map(m=>m.label+' '+m.qty+'인분').join(', ')+' (음식값 '+won(food)+')');
+    if(offMenu) cinfo.push('메뉴판외 요청: '+offMenu);
+    if(inquiry) cinfo.push('문의사항: '+inquiry);
+    const why = (menus.length>0 && food<MIN_FOOD) ? ('음식값 최소기준('+won(MIN_FOOD)+') 미달') : '메뉴 미선택/맞춤 문의';
+    const consultText='[푸드트럭 상담 요청]\n'+cinfo.join('\n')+'\n\n\u203B '+why+' \u2014 유선 상담 필요';
+    const cb=document.getElementById('result'); cb.style.display='block';
+    cb.innerHTML='<div class="consult"><b>\uD83D\uDCDE 유선 상담 안내</b>'
+      +'입력해 주신 내용은 담당자가 <b>유선으로 직접 상담</b> 도와드릴게요.<br>남겨주신 연락처로 곧 연락드리겠습니다. 😊</div>'
+      +'<div id="sendStatus" class="qnote" style="margin-top:10px;font-weight:700;color:var(--tomato-deep)"></div>';
+    cb.scrollIntoView({behavior:'smooth'});
+    sendOwnerAlert(consultText);
+    return;
+  }
 
   // ----- 비용 합산 -----
   const items=menus.slice();
