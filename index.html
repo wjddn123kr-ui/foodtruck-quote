@@ -285,6 +285,18 @@ function toggleFace(btn,name){
 }
 
 /* 계산 */
+let lastAlert='';
+async function sendOwnerAlert(text){
+  const el=document.getElementById('sendStatus');
+  if(text===lastAlert){ if(el) el.innerHTML='\u2705 담당자에게 이미 전달했어요'; return; }
+  if(el) el.innerHTML='\u23F3 담당자에게 전달 중...';
+  try{
+    const r=await fetch('/api/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
+    if(r.ok){ lastAlert=text; if(el) el.innerHTML='\u2705 담당자에게 견적 요청이 전달됐어요 \u2014 곧 연락드릴게요'; }
+    else { if(el) el.innerHTML='\u26A0\uFE0F 전송이 지연되고 있어요. 잠시 후 다시 누르시거나 전화로 문의해 주세요.'; }
+  }catch(e){ if(el) el.innerHTML='\u26A0\uFE0F 전송 실패 \u2014 네트워크 확인 후 다시 시도해 주세요.'; }
+}
+
 document.getElementById('calc').onclick=()=>{
  try{
   const menus=[]; let food=0; const adjusts=[];
@@ -378,6 +390,24 @@ document.getElementById('calc').onclick=()=>{
   const consult = needConsult ? '<div class="consult"><b>더 정확한 상담을 위해 담당자가 곧 연락드릴 예정입니다.</b>'+rHtml+'</div>' : '';
   const echo = `<div class="echo">📞 ${cname} · ${cphone}<span>위 번호가 정확한지 한 번만 더 확인해 주세요</span></div>`;
 
+  const amountText = exact ? won(subtotal) : (won(lo)+'~'+won(hi));
+  const optBits=[];
+  if(overFee) optBits.push('추가시간 '+extraHours+'시간');
+  if(xb) optBits.push('X배너 '+xbannerQty+'개');
+  if(stk) optBits.push('스티커 '+(stickerBundle*1000)+'장');
+  if(sector) optBits.push('섹터이동 '+exMap['섹터이동']);
+  if(monitor) optBits.push('모니터 '+exMap['모니터']);
+  if(gen) optBits.push('자가발전기');
+  const paidBan=bannerRows.filter(b=>!b.free).map(b=>b.f);
+  if(paidBan.length) optBits.push('현수막추가 '+paidBan.join('·'));
+  const alertText='[푸드트럭 견적 신청]\n담당자/회사: '+cname+'\n연락처: '+cphone
+    +'\n지역: '+region+(loc?(' / 장소 '+loc):'')
+    +'\n배식: '+startH+'~'+endH+'시'
+    +'\n메뉴: '+items.map(m=>m.label+' '+m.qty+'인분').join(', ')
+    +(optBits.length?('\n옵션: '+optBits.join(', ')):'')
+    +(offMenu?('\n추가요청: '+offMenu):'')
+    +'\n예상금액(VAT별도): '+amountText;
+
   const box=document.getElementById('result'); box.style.display='block';
   box.innerHTML=`<div class="quote">
     <h3>🧾 견적 안내</h3>${badge}
@@ -385,8 +415,10 @@ document.getElementById('calc').onclick=()=>{
     <div class="qtotal"><span class="lab">예상 금액 (VAT 별도)</span>${valHtml}</div>
     <div class="qnote">${note}</div>${adj}
     ${consult}${echo}
+    <div id="sendStatus" class="qnote" style="margin-top:10px;font-weight:700;color:var(--tomato-deep)"></div>
   </div>`;
   box.scrollIntoView({behavior:'smooth'});
+  sendOwnerAlert(alertText);
  }catch(err){
   const eb=document.getElementById('result'); eb.style.display='block';
   eb.innerHTML='<div class="flagcard"><h3>\u26A0\uFE0F 잠시 오류가 났어요</h3><p>'+(err&&err.message?err.message:String(err))+'</p><p style="margin-top:6px;font-size:12px;color:var(--muted)">이 메시지를 캡처해 알려주시면 바로 고쳐드릴게요.</p></div>';
