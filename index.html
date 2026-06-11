@@ -293,12 +293,12 @@ function toggleFace(btn,name){
 
 /* 계산 */
 let lastAlert='';
-async function sendOwnerAlert(text){
+async function sendOwnerAlert(text, vars){
   const el=document.getElementById('sendStatus');
   if(text===lastAlert){ if(el) el.innerHTML='\u2705 담당자에게 이미 전달했어요'; return; }
   if(el) el.innerHTML='\u23F3 담당자에게 전달 중...';
   try{
-    const r=await fetch('/api/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
+    const r=await fetch('/api/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text, vars:vars||null})});
     if(r.ok){ lastAlert=text; if(el) el.innerHTML='\u2705 담당자에게 견적 요청이 전달됐어요 \u2014 곧 연락드릴게요'; }
     else { if(el) el.innerHTML='\u26A0\uFE0F 전송이 지연되고 있어요. 잠시 후 다시 누르시거나 전화로 문의해 주세요.'; }
   }catch(e){ if(el) el.innerHTML='\u26A0\uFE0F 전송 실패 \u2014 네트워크 확인 후 다시 시도해 주세요.'; }
@@ -353,7 +353,16 @@ document.getElementById('calc').onclick=()=>{
       +'입력해 주신 내용은 담당자가 <b>유선으로 직접 상담</b> 도와드릴게요.<br>남겨주신 연락처로 곧 연락드리겠습니다. 😊</div>'
       +'<div id="sendStatus" class="qnote" style="margin-top:10px;font-weight:700;color:var(--tomato-deep)"></div>';
     cb.scrollIntoView({behavior:'smooth'});
-    sendOwnerAlert(consultText);
+    sendOwnerAlert(consultText, {
+    '담당자': cname,
+    '연락처': cphone,
+    '지역': region ? (region + (loc ? (' / ' + loc) : '')) : '미정',
+    '배식': (endH > startH) ? (startH + '시~' + endH + '시') : '미정',
+    '전기': (elec === '불가능' ? '지원 불가 (자가발전기)' : '지원 가능'),
+    '내역': (menus.length ? menus.map(m => m.label + ' ' + m.qty + '인분').join(', ') : '메뉴 미선택') + (offMenu ? (' / 메뉴판외: ' + offMenu) : ''),
+    '금액': '유선 상담 필요',
+    '문의': inquiry || offMenu || '없음'
+  });
     return;
   }
 
@@ -450,7 +459,16 @@ document.getElementById('calc').onclick=()=>{
     <div id="sendStatus" class="qnote" style="margin-top:10px;font-weight:700;color:var(--tomato-deep)"></div>
   </div>`;
   box.scrollIntoView({behavior:'smooth'});
-  sendOwnerAlert(alertText);
+  sendOwnerAlert(alertText, {
+    '담당자': cname,
+    '연락처': cphone,
+    '지역': region + (loc ? (' / ' + loc) : ''),
+    '배식': startH + '시~' + endH + '시',
+    '전기': (elec === '불가능' ? '지원 불가 (자가발전기)' : '지원 가능'),
+    '내역': btxt.join('\n'),
+    '금액': amountText + ' (VAT별도)',
+    '문의': ((offMenu ? ('메뉴판외: ' + offMenu) : '') + (inquiry ? ((offMenu ? ' / ' : '') + inquiry) : '')) || '없음'
+  });
  }catch(err){
   const eb=document.getElementById('result'); eb.style.display='block';
   eb.innerHTML='<div class="flagcard"><h3>\u26A0\uFE0F 잠시 오류가 났어요</h3><p>'+(err&&err.message?err.message:String(err))+'</p><p style="margin-top:6px;font-size:12px;color:var(--muted)">이 메시지를 캡처해 알려주시면 바로 고쳐드릴게요.</p></div>';
