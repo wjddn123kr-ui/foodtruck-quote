@@ -60,7 +60,11 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({
           model: MODEL,
           max_tokens: 1024,
-          system: SYSTEM_KNOWLEDGE,
+          // 프롬프트 캐싱: 고정 지식(system)에 캐시 지점을 두면 tools+system이 함께 캐시된다.
+          // 반복 요청 시 이 부분은 재계산하지 않고 캐시에서 읽어 비용·속도를 크게 줄인다(답변 품질은 동일).
+          system: [
+            { type: 'text', text: SYSTEM_KNOWLEDGE, cache_control: { type: 'ephemeral' } },
+          ],
           tools,
           messages: convo,
         }),
