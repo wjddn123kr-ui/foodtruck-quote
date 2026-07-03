@@ -5,36 +5,77 @@
 
 const { calculateQuote } = require('../lib/quote-engine.js');
 const { SYSTEM_KNOWLEDGE } = require('../lib/knowledge.js');
+const { sendLeadAlert } = require('../lib/lead-notify.js');
 
 const MODEL = 'claude-sonnet-4-6'; // 상담용. 비용을 더 줄이려면 claude-haiku-4-5-20251001
 
 // AI에게 알려줄 도구 정의
-const tools = [{
-  name: 'calculate_quote',
-  description: '고객 정보(메뉴·인분수·지역 등)가 충분히 모였을 때만 호출한다. 정확한 견적을 계산해 반환한다. 이 도구 없이 절대 금액을 말하지 않는다.',
-  input_schema: {
-    type: 'object',
-    properties: {
-      items: {
-        type: 'array',
-        description: '주문 메뉴 항목들',
+const tools = [
+  {
+    name: 'calculate_quote',
+    description: '고객 정보(메뉴·인분수·지역 등)가 충분히 모였을 때만 호출한다. 정확한 견적을 계산해 반환한다. 이 도구 없이 절대 금액을 말하지 않는다.',
+    input_schema: {
+      type: 'object',
+      properties: {
         items: {
-          type: 'object',
-          properties: {
-            name: { type: 'string' },
-            unitPrice: { type: 'number', description: '메뉴 단가(원)' },
-            servings: { type: 'number', description: '인분 수' },
+          type: 'array',
+          description: '주문 메뉴 항목들',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              unitPrice: { type: 'number', description: '메뉴 단가(원)' },
+              servings: { type: 'number', description: '인분 수' },
+            },
+            required: ['unitPrice', 'servings'],
           },
-          required: ['unitPrice', 'servings'],
         },
+        region: { type: 'string', description: '행사 지역' },
+        serviceHours: { type: 'number', description: '운영 시간(기본 3)' },
+        extras: { type: 'array', items: { type: 'string' }, description: '추가 옵션' },
       },
-      region: { type: 'string', description: '행사 지역' },
-      serviceHours: { type: 'number', description: '운영 시간(기본 3)' },
-      extras: { type: 'array', items: { type: 'string' }, description: '추가 옵션' },
+      required: ['items', 'region'],
     },
-    required: ['items', 'region'],
   },
-}];
+  {
+    name: 'submit_lead',
+    description: '고객이 상담을 원하거나 연락처를 남겼을 때 호출한다. 담당자에게 상담 리드를 문자로 전달한다. 반드시 성함(회사명)과 연락처를 받은 뒤에만 호출한다.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        contactName: { type: 'string', description: '담당자명 또는 회사명' },
+        phone: { type: 'string', description: '연락처(전화번호)' },
+        region: { type: 'string', description: '행사 지역(있으면)' },
+        menu: { type: 'string', description: '문의 메뉴·인분 요약(있으면)' },
+        quote: { type: 'string', description: '안내한 견적 금액 요약(있으면)' },
+        datetime: { type: 'string', description: '행사 날짜·시간(있으면)' },
+        note: { type: 'string', description: '기타 문의·특이사항(있으면)' },
+      },
+      required: ['contactName', 'phone'],
+    },
+  },
+];
+
+// 상담 리드를 담당자에게 문자로 발송
+async function handleLead(input) {
+  const p = input || {};
+  const lines = [
+    '[푸드트럭하우스 챗봇 상담 신청]',
+    `담당자/회사: ${p.contactName || '-'}`,
+    `연락처: ${p.phone || '-'}`,
+  ];
+  if (p.region) lines.push(`지역: ${p.region}`);
+  if (p.menu) lines.push(`메뉴/인분: ${p.menu}`);
+  if (p.quote) lines.push(`견적: ${p.quote}`);
+  if (p.datetime) lines.push(`일정: ${p.datetime}`);
+  if (p.note) lines.push(`문의: ${p.note}`);
+
+  const res = await sendLeadAlert(lines.join('\n'));
+  // AI에게는 항상 접수됨을 알려 고객에게 안심 안내하도록 한다(발송 실패해도 대화상 리드는 남음).
+  return res.ok
+    ? { status: 'submitted', message: '담당자에게 상담 신청이 전달되었습니다.' }
+    : { status: 'received', message: '상담 신청이 접수되었습니다. (담당자 확인 예정)' };
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -79,10 +120,12 @@ module.exports = async function handler(req, res) {
         const toolUses = data.content.filter((b) => b.type === 'tool_use');
         convo.push({ role: 'assistant', content: data.content });
 
-        const results = toolUses.map((tu) => {
+        const results = await Promise.all(toolUses.map(async (tu) => {
           let out;
           if (tu.name === 'calculate_quote') {
             out = calculateQuote(tu.input);
+          } else if (tu.name === 'submit_lead') {
+            out = await handleLead(tu.input);
           } else {
             out = { error: 'unknown tool' };
           }
@@ -91,7 +134,7 @@ module.exports = async function handler(req, res) {
             tool_use_id: tu.id,
             content: JSON.stringify(out),
           };
-        });
+        }));
 
         convo.push({ role: 'user', content: results });
         continue; // 결과를 넣고 한 번 더 AI에게 물어본다
