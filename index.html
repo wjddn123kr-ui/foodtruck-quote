@@ -2,24 +2,55 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>푸드트럭하우스 — 간편 견적</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>푸드트럭하우스 · 간편견적 &amp; 상담</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{
   --paper:#FBF4EA; --card:#FFFFFF; --ink:#2C2622; --muted:#9C8E82;
   --tomato:#E8553B; --tomato-deep:#C8412B; --amber:#F2B544; --amber-soft:#FCEBC9;
   --line:#EFE2D2; --ok:#3F9D6B; --field:#FBF4EA;
+  /* 대화형 챗봇 팔레트 */
+  --accent:#E8553B; --accent-press:#D2432A; --sub:#8B95A1; --bot:#F2F4F6;
+  --page:#F7F8FA; --white:#FFFFFF;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);font-family:'Gowun Dodum',-apple-system,sans-serif;color:var(--ink);padding:18px;display:flex;justify-content:center}
-.app{width:100%;max-width:480px;background:var(--card);border-radius:24px;border:1px solid var(--line);overflow:hidden;box-shadow:0 18px 54px rgba(200,65,43,.14)}
-.head{background:linear-gradient(135deg,var(--tomato),var(--tomato-deep));color:#fff;padding:20px 22px;display:flex;align-items:center;gap:13px}
-.head .logo{width:46px;height:46px;border-radius:14px;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
-.head h1{font-family:'Jua',sans-serif;font-size:21px;font-weight:400}
-.head .sub{font-size:12.5px;opacity:.92;margin-top:3px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{font-family:'Gowun Dodum',-apple-system,sans-serif;color:var(--ink);background:var(--paper);display:flex;justify-content:center;min-height:100dvh}
+
+/* ===== 공용 셸 ===== */
+.shell{width:100%;max-width:480px;background:var(--card);display:flex;flex-direction:column;min-height:100dvh}
+body.mode-simple{padding:18px 18px 40px;background:var(--paper)}
+body.mode-simple .shell{border-radius:24px;border:1px solid var(--line);overflow:hidden;box-shadow:0 18px 54px rgba(200,65,43,.14);min-height:auto}
+body.mode-chat{padding:0;background:var(--page)}
+body.mode-chat .shell{height:100dvh;min-height:0;overflow:hidden}
+
+/* 브랜드 헤더 (공용) */
+.topbar{flex:0 0 auto;background:linear-gradient(135deg,var(--tomato),var(--tomato-deep));color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px}
+.topbar .logo{width:42px;height:42px;border-radius:13px;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 4px 10px rgba(0,0,0,.12);flex:0 0 auto}
+.topbar .brand{flex:1;min-width:0;line-height:1.2}
+.topbar .brand h1{font-family:'Jua',sans-serif;font-size:19px;font-weight:400}
+.topbar .brand .sub{font-size:12px;opacity:.92;margin-top:2px}
+.topbar .kakao-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;background:#FEE500;color:#3C1E1E;text-decoration:none;font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:999px;letter-spacing:-.2px;white-space:nowrap;transition:.12s;font-family:'Gowun Dodum',sans-serif}
+.topbar .kakao-btn:hover{filter:brightness(.96)}
+.topbar .kakao-btn:active{transform:scale(.96)}
+
+/* 탭 */
+.tabs{flex:0 0 auto;display:flex;background:var(--card);border-bottom:1px solid var(--line)}
+.tab{flex:1;text-align:center;padding:11px 8px 10px;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;font-family:'Jua',sans-serif;font-size:14.5px;color:var(--muted);transition:.15s}
+.tab .desc{display:block;font-family:'Gowun Dodum',sans-serif;font-size:10.5px;font-weight:400;color:var(--muted);margin-top:3px}
+.tab.active{color:var(--tomato-deep);border-bottom-color:var(--tomato)}
+.tab.active .desc{color:#C98B7A}
+
+/* 뷰 전환 */
+.view{display:none}
+.view.active{display:block}
+#view-chat.active{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+
+/* ===== 선택형(간편견적) ===== */
 .body{padding:20px 20px 8px}
 .sec{margin-bottom:20px}
 .sec > .lab{font-family:'Jua',sans-serif;font-size:14px;color:var(--tomato-deep);margin-bottom:9px;display:flex;align-items:center;gap:7px}
@@ -29,13 +60,13 @@ body{background:var(--paper);font-family:'Gowun Dodum',-apple-system,sans-serif;
 .mrow input{flex:1;min-width:0}
 .mrow .del{flex:0 0 auto;width:34px;height:42px;border:none;background:var(--amber-soft);color:var(--tomato-deep);border-radius:11px;font-size:16px;cursor:pointer}
 .mrow .del:hover{background:var(--amber);color:#fff}
-select,input[type=number],input[type=text],textarea{
+select,input[type=number],input[type=text],input[type=tel],.body textarea{
   width:100%;height:42px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;
-  font-family:inherit;font-size:14.5px;background:var(--field);color:var(--ink);
+  font-family:'Gowun Dodum',sans-serif;font-size:14.5px;background:var(--field);color:var(--ink);
 }
-textarea{height:auto;padding:10px 12px;resize:vertical;min-height:46px}
-select:focus,input:focus,textarea:focus{outline:none;border-color:var(--tomato)}
-.addbtn{margin-top:2px;background:none;border:1.5px dashed var(--amber);color:#B07F12;border-radius:12px;padding:9px;width:100%;font-family:inherit;font-size:13px;cursor:pointer}
+.body textarea{height:auto;padding:10px 12px;resize:vertical;min-height:46px}
+select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:var(--tomato)}
+.addbtn{margin-top:2px;background:none;border:1.5px dashed var(--amber);color:#B07F12;border-radius:12px;padding:9px;width:100%;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer}
 .addbtn:hover{background:var(--amber-soft)}
 .choices{display:flex;gap:8px;flex-wrap:wrap}
 .choices label{flex:1;min-width:90px;position:relative}
@@ -56,8 +87,11 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--tomato)}
 .zone{cursor:pointer;transition:.12s}
 .zone:hover{opacity:.85}
 .zlabel{font-family:'Gowun Dodum',sans-serif;font-size:11px;fill:var(--ink);pointer-events:none}
-.cta{margin:6px 0 18px;background:var(--tomato);color:#fff;border:none;width:100%;padding:15px;border-radius:15px;font-family:'Jua',sans-serif;font-size:17px;cursor:pointer;transition:.15s}
+.cta{margin:6px 0 14px;background:var(--tomato);color:#fff;border:none;width:100%;padding:15px;border-radius:15px;font-family:'Jua',sans-serif;font-size:17px;cursor:pointer;transition:.15s}
 .cta:hover{background:var(--tomato-deep);transform:translateY(-1px)}
+.tochat{margin:0 0 18px;background:#FFF7F0;border:1.5px dashed var(--amber);color:#B07F12;border-radius:14px;padding:12px;width:100%;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;line-height:1.5;transition:.15s}
+.tochat b{color:var(--tomato-deep)}
+.tochat:hover{background:var(--amber-soft)}
 .result{padding:0 20px 22px}
 .quote{background:var(--card);border:1.5px solid var(--amber);border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(242,181,68,.2)}
 .quote h3{font-family:'Jua',sans-serif;font-weight:400;font-size:17px;margin-bottom:4px;display:flex;gap:7px;align-items:center}
@@ -94,165 +128,240 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--tomato)}
 .poslabel{font-size:13px;font-weight:700;color:var(--tomato-deep);margin:12px 0 8px}
 .poslabel .pl-sub{font-weight:600;color:#9C8E82;font-size:11.5px}
 .pos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.poschip{position:relative;border:2px solid var(--line);background:#fff;border-radius:12px;padding:13px 6px 12px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;line-height:1.2;font-family:inherit;transition:.15s}
+.poschip{position:relative;border:2px solid var(--line);background:#fff;border-radius:12px;padding:13px 6px 12px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;line-height:1.2;font-family:'Gowun Dodum',sans-serif;transition:.15s}
 .poschip small{display:block;font-size:10.5px;font-weight:600;color:#9C8E82;margin-top:3px}
 .poschip:hover{border-color:#1E9BFF}
 .poschip.on{border-color:#1E9BFF;background:rgba(30,155,255,.12);color:#0D6FBE}
 .poschip.on small{color:#3E96D6}
 .poschip.on::after{content:'\2713';position:absolute;top:5px;right:6px;width:18px;height:18px;border-radius:50%;background:#1E9BFF;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:800}
 .poschip.locked{cursor:default}
+
+/* ===== 대화형(상담) ===== */
+#view-chat{--ink:#191F28;--line:#EDF0F3;font-family:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.stream{flex:1 1 auto;overflow-y:auto;padding:20px 18px 10px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.stream::-webkit-scrollbar{width:0}
+.row{display:flex;max-width:100%}
+.row.me{justify-content:flex-end}
+.bubble{max-width:80%;padding:11px 14px;font-size:14.5px;line-height:1.6;border-radius:18px;word-break:break-word;white-space:pre-wrap;letter-spacing:-.2px;animation:rise .26s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.bot .bubble{background:var(--bot);color:var(--ink);border-top-left-radius:6px}
+.me  .bubble{background:var(--accent);color:#fff;border-top-right-radius:6px}
+.typing{display:inline-flex;gap:5px;align-items:center;padding:3px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#B0B8C1;animation:blink 1.3s infinite}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chips{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;padding:2px 18px 14px}
+.chip{border:1px solid #E1E5EA;background:var(--white);color:#4E5968;border-radius:999px;padding:9px 15px;font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;transition:.12s;letter-spacing:-.2px}
+.chip:hover{background:#F7F8FA;border-color:#D5DAE0}
+.chip:active{transform:scale(.97)}
+.composer{flex:0 0 auto;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--line);display:flex;align-items:flex-end;gap:9px}
+.composer .field{flex:1;display:flex;align-items:flex-end;background:#F2F4F6;border-radius:22px;padding:4px 6px 4px 16px}
+.composer textarea{flex:1;resize:none;border:none;background:transparent;padding:8px 0;font-family:inherit;font-size:14.5px;color:var(--ink);line-height:1.45;max-height:110px;outline:none;letter-spacing:-.2px}
+.composer textarea::placeholder{color:#AEB5BD}
+.send{flex:0 0 auto;width:40px;height:40px;border:none;border-radius:50%;background:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
+.send svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.send:hover:not(:disabled){background:var(--accent-press)}
+.send:active:not(:disabled){transform:scale(.94)}
+.send:disabled{background:#D5DAE0;cursor:not-allowed}
+.err{color:var(--accent-press);font-size:12.5px;text-align:center;padding:2px 18px 6px}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
-<body>
-<div class="app">
-  <div class="head">
+<body class="mode-simple">
+<div class="shell">
+  <!-- 공용 브랜드 헤더 -->
+  <header class="topbar">
     <div class="logo">🚚</div>
-    <div>
+    <div class="brand">
       <h1>푸드트럭하우스</h1>
-      <div class="sub">메뉴만 고르면 견적이 바로 나와요</div>
+      <div class="sub" id="brandSub">메뉴만 고르면 견적이 바로 나와요</div>
     </div>
-  </div>
+    <a class="kakao-btn" href="https://pf.kakao.com/_MJvVG/chat" target="_blank" rel="noopener" aria-label="카카오톡 상담">💬 카톡상담</a>
+  </header>
 
-  <div class="body">
-    <!-- 메뉴 -->
-    <div class="sec">
-      <div class="lab">🍴 메뉴 선택</div>
-      <div id="menuRows"></div>
-      <button class="addbtn" id="addMenu">＋ 메뉴 추가</button>
-      <div class="hint">여러 메뉴를 동시에 주문하실 수 있어요. (예: 커피 500잔 + 핫도그 200개)</div>
-    </div>
+  <!-- 탭 -->
+  <nav class="tabs">
+    <button class="tab active" id="tab-simple" type="button" onclick="switchTab('simple')">간편 견적<span class="desc">메뉴 고르면 바로</span></button>
+    <button class="tab" id="tab-chat" type="button" onclick="switchTab('chat')">대화 상담<span class="desc">자세히 물어보기</span></button>
+  </nav>
 
-    <!-- 추가 요청 메뉴 -->
-    <div class="sec">
-      <div class="lab">✍️ 메뉴판에 없는 요청 (선택)</div>
-      <textarea id="offMenu" placeholder="예: 시즌 한정 음료, 피자, 특별 케이크 등 — 적어주시면 담당자가 직접 안내드려요"></textarea>
-    </div>
-
-    <!-- 지역 -->
-    <div class="sec">
-      <div class="lab">📍 행사 지역 (출장비)</div>
-      <select id="region">
-        <option value="">지역을 선택하세요</option>
-        <option value="서울·경기남부">서울·경기남부</option>
-        <option value="경기북부·외곽">경기북부·외곽</option>
-        <option value="천안·아산">천안·아산</option>
-        <option value="충청도권">충청도권</option>
-        <option value="강원도권">강원도권</option>
-        <option value="전라북도권">전라북도권</option>
-        <option value="전라남도권">전라남도권</option>
-        <option value="경상북도권">경상북도권</option>
-        <option value="경상남도권">경상남도권</option>
-        <option value="제주·섬지역권">제주·섬지역권</option>
-      </select>
-      <input type="text" id="addr" placeholder="정확한 행사 장소 (지번까지 — 선택)" style="margin-top:8px">
-      <div class="hint">출장비는 현장 조건에 따라 협의 가능해요.</div>
-    </div>
-
-    <!-- 트럭 진행 장소 확정 여부 -->
-    <div class="sec">
-      <div class="lab">🚧 트럭 진행 장소 확정 여부</div>
-      <div class="choices">
-        <label><input type="radio" name="loc" value="확정" checked><span>확정됨</span></label>
-        <label><input type="radio" name="loc" value="미정"><span>아직 미정</span></label>
-        <label><input type="radio" name="loc" value="허가필요"><span>허가 필요<br>(학교·공원 등)</span></label>
+  <!-- ===== 뷰1: 선택형(간편견적) ===== -->
+  <section class="view active" id="view-simple">
+    <div class="body">
+      <!-- 메뉴 -->
+      <div class="sec">
+        <div class="lab">🍴 메뉴 선택</div>
+        <div id="menuRows"></div>
+        <button class="addbtn" id="addMenu">＋ 메뉴 추가</button>
+        <div class="hint">여러 메뉴를 동시에 주문하실 수 있어요. (예: 커피 500잔 + 핫도그 200개)</div>
       </div>
+
+      <!-- 추가 요청 메뉴 -->
+      <div class="sec">
+        <div class="lab">✍️ 메뉴판에 없는 요청 (선택)</div>
+        <textarea id="offMenu" placeholder="예: 시즌 한정 음료, 피자, 특별 케이크 등 — 적어주시면 담당자가 직접 안내드려요"></textarea>
+      </div>
+
+      <!-- 지역 -->
+      <div class="sec">
+        <div class="lab">📍 행사 지역 (출장비)</div>
+        <select id="region">
+          <option value="">지역을 선택하세요</option>
+          <option value="서울·경기남부">서울·경기남부</option>
+          <option value="경기북부·외곽">경기북부·외곽</option>
+          <option value="천안·아산">천안·아산</option>
+          <option value="충청도권">충청도권</option>
+          <option value="강원도권">강원도권</option>
+          <option value="전라북도권">전라북도권</option>
+          <option value="전라남도권">전라남도권</option>
+          <option value="경상북도권">경상북도권</option>
+          <option value="경상남도권">경상남도권</option>
+          <option value="제주·섬지역권">제주·섬지역권</option>
+        </select>
+        <input type="text" id="addr" placeholder="정확한 행사 장소 (지번까지 — 선택)" style="margin-top:8px">
+        <div class="hint">출장비는 현장 조건에 따라 협의 가능해요.</div>
+      </div>
+
+      <!-- 트럭 진행 장소 확정 여부 -->
+      <div class="sec">
+        <div class="lab">🚧 트럭 진행 장소 확정 여부</div>
+        <div class="choices">
+          <label><input type="radio" name="loc" value="확정" checked><span>확정됨</span></label>
+          <label><input type="radio" name="loc" value="미정"><span>아직 미정</span></label>
+          <label><input type="radio" name="loc" value="허가필요"><span>허가 필요<br>(학교·공원 등)</span></label>
+        </div>
+      </div>
+
+      <!-- 배식 시간 (초과분 자동 추가시간 계산) -->
+      <div class="sec">
+        <div class="lab">⏰ 배식 시간</div>
+        <div class="timewrap">
+          <select id="startH"></select>
+          <span class="tilde">~</span>
+          <select id="endH"></select>
+        </div>
+        <div class="hint">기본 3시간 제공 · 배식 1시간 전 셋팅 시작. 3시간을 넘으면 초과분만 시간당 30,000원 자동 계산돼요.</div>
+        <div id="timePreview" class="hint" style="margin-top:6px;color:var(--ink)"></div>
+      </div>
+
+      <!-- 전기 지원 여부 -->
+      <div class="sec">
+        <div class="lab">🔌 전기 지원 가능 여부</div>
+        <div class="choices">
+          <label><input type="radio" name="elec" value="가능" checked><span>지원 가능</span></label>
+          <label><input type="radio" name="elec" value="불가능"><span>지원 불가<br>(자가발전기 +5만)</span></label>
+        </div>
+        <div class="hint">기본 가정용 220V '돼지코' 연결만 가능하면 됩니다 (메뉴별 상이하나 보통 3kw 이내). 전기가 없으면 자가발전기 사용료 5만원이 추가돼요.</div>
+      </div>
+
+      <!-- 출력물 -->
+      <div class="sec">
+        <div class="lab">🖨️ 차량 출력물 (현수막)</div>
+        <div class="hint" style="margin-top:0;margin-bottom:8px"><b>상단·중앙(행사 메뉴판) 2면은 기본으로 무료 제공</b>돼요. <b>좌·우측</b>은 면당 20,000원이고, 견적가(<b>출장비 제외</b>)가 <b>100만원 이상이면 좌·우도 전면 무료</b>예요. 아래 그림은 부착 위치 <b>참고용</b>이고, 실제 선택은 <b>그림 아래 버튼</b>에서 하세요. ※ 좌·우를 선택하지 않으면 <b>기본 현수막(맛있게 드세요)</b>이 자동으로 부착돼요.</div>
+        <div class="truckwrap">
+          <img src="banner-guide.jpg.png" alt="위치별 현수막·출력물 부착 위치 배치도" style="width:100%;display:block;border-radius:12px">
+          <!-- 사진 위 클릭 존: 상단·중앙은 고정 체크, 좌·우·X배너·스티커는 클릭 토글(하단과 동기화). 좌표는 % (필요 시 미세조정) -->
+          <button type="button" class="zonebtn on locked" style="top:32%;left:25%;width:33%;height:10%" aria-label="상단 (기본 무료)"></button>
+          <button type="button" class="zonebtn on locked" style="top:57%;left:28%;width:36%;height:21%" aria-label="행사 메뉴판 (기본 무료)"></button>
+          <button type="button" class="zonebtn" data-face="좌" onclick="toggleFace('좌')" style="top:55%;left:2.5%;width:16.5%;height:22%" aria-label="좌측 현수막 추가"></button>
+          <button type="button" class="zonebtn" data-face="우" onclick="toggleFace('우')" style="top:55%;left:66.5%;width:16.5%;height:22%" aria-label="우측 현수막 추가"></button>
+          <button type="button" class="zonebtn zlight" data-opt="xbanner" onclick="toggleOpt('xbanner')" style="top:54%;left:85%;width:11.5%;height:34%" aria-label="X배너 추가"></button>
+          <button type="button" class="zonebtn zlight" data-opt="sticker" onclick="toggleOpt('sticker')" style="top:80%;left:47%;width:20%;height:14%" aria-label="컵홀더 스티커 추가"></button>
+        </div>
+        <div class="poslabel">📌 현수막 부착 위치 <span class="pl-sub">(상단·중앙은 기본 무료 포함 · 좌·우를 눌러 추가)</span></div>
+        <div class="pos-grid">
+          <div class="poschip on locked">상단<small>기본·무료</small></div>
+          <button type="button" class="poschip" data-face="좌" onclick="toggleFace('좌')">좌측<small>면당 2만</small></button>
+          <div class="poschip on locked">중앙<small>기본·무료</small></div>
+          <button type="button" class="poschip" data-face="우" onclick="toggleFace('우')">우측<small>면당 2만</small></button>
+        </div>
+        <div class="opt">
+          <input type="checkbox" id="xbanner">
+          <svg width="27" height="36" viewBox="0 0 27 36" style="flex:0 0 auto" aria-hidden="true"><rect x="5.5" y="1.5" width="16" height="25" rx="1.6" fill="#E6F0FF" stroke="#2E6BD6" stroke-width="1.4"/><rect x="8.3" y="4.6" width="10.4" height="2.4" rx="1.2" fill="#2E6BD6"/><circle cx="13.5" cy="14.5" r="3.9" fill="#2E6BD6"/><path d="M11.8 14.6l1.3 1.3 2.3-2.5" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="21" width="9" height="1.9" rx="1" fill="#9DBBEA"/><line x1="13.5" y1="26.5" x2="13.5" y2="30.5" stroke="#9C8E82" stroke-width="1.4"/><line x1="7" y1="34" x2="20" y2="28" stroke="#9C8E82" stroke-width="1.3" stroke-linecap="round"/><line x1="20" y1="34" x2="7" y2="28" stroke="#9C8E82" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span class="nm">차량 옆 X배너 <span class="pr">(2만/개 · 여러 개 가능)</span></span>
+          <input type="number" id="xbannerQty" class="qty" value="1" min="1">
+        </div>
+        <div class="opt">
+          <input type="checkbox" id="sticker">
+          <svg width="28" height="36" viewBox="0 0 28 36" style="flex:0 0 auto" aria-hidden="true"><line x1="16.5" y1="2" x2="14.6" y2="11" stroke="#A9B7CC" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 10.5 Q14 3.5 21.5 10.5 Z" fill="#E4EAF2" stroke="#AEBACC" stroke-width="1.1"/><path d="M6.7 10.5 L21.3 10.5 L19.4 34 L8.6 34 Z" fill="#F4F7FB" stroke="#AEBACC" stroke-width="1.2"/><path d="M7.7 18.5 L20.3 18.5 L19.4 29 L8.6 29 Z" fill="#fff" stroke="#D7DEE8" stroke-width="1"/><circle cx="14" cy="23.6" r="4.3" fill="#27408B"/><path d="M12.7 21.7l3.1 1.9-3.1 1.9z" fill="#fff"/></svg>
+          <span class="nm">컵홀더 로고 스티커 <span class="pr">(컵홀더 기본 제공 · 스티커 1,000장당 +4만)</span></span>
+          <input type="number" id="stickerBundle" class="qty" value="1" min="1">
+        </div>
+      </div>
+
+      <!-- 기타 옵션 -->
+      <div class="sec">
+        <div class="lab">🧩 기타 옵션 (해당 시 체크)</div>
+        <div class="opt">
+          <input type="checkbox" class="ex" data-key="섹터이동">
+          <span class="nm">행사 진행 중 섹터(구역) 이동 <span class="pr">(5만/구역)</span></span>
+          <input type="number" class="qty" data-qty="섹터이동" value="1" min="1">
+        </div>
+        <div class="opt">
+          <input type="checkbox" class="ex" data-key="모니터">
+          <span class="nm">모니터 추가 (스탠바이미GO) <span class="pr">(5만/대)</span></span>
+          <input type="number" class="qty" data-qty="모니터" value="1" min="1">
+        </div>
+      </div>
+
+      <!-- 추가 문의사항 (자유 입력) -->
+      <div class="sec">
+        <div class="lab">💬 추가 문의사항</div>
+        <textarea id="inquiry" rows="3" placeholder="더 궁금한 점이나 요청사항을 자유롭게 적어주세요 (선택)"></textarea>
+        <div class="hint">남겨주시면 담당자가 확인 후 함께 안내드려요.</div>
+      </div>
+
+      <!-- 연락처 (견적 확인 전 입력) -->
+      <div class="sec">
+        <div class="lab">📞 연락처 정보</div>
+        <input type="text" id="cname" placeholder="담당자명 / 회사명">
+        <input type="tel" id="cphone" inputmode="numeric" placeholder="연락처 (예: 010-1234-5678)" style="margin-top:8px">
+        <div class="hint">정확한 견적·상담 안내를 위해 연락처를 확인해요. 입력하면 바로 예상 견적이 표시됩니다.</div>
+      </div>
+
+      <button class="cta" id="calc">견적 확인하기</button>
+      <button type="button" class="tochat" onclick="switchTab('chat')">찾는 메뉴가 없거나 더 궁금한 점이 있나요?<br><b>💬 대화 상담으로 편하게 물어보기 →</b></button>
     </div>
 
-    <!-- 배식 시간 (초과분 자동 추가시간 계산) -->
-    <div class="sec">
-      <div class="lab">⏰ 배식 시간</div>
-      <div class="timewrap">
-        <select id="startH"></select>
-        <span class="tilde">~</span>
-        <select id="endH"></select>
-      </div>
-      <div class="hint">기본 3시간 제공 · 배식 1시간 전 셋팅 시작. 3시간을 넘으면 초과분만 시간당 30,000원 자동 계산돼요.</div>
-      <div id="timePreview" class="hint" style="margin-top:6px;color:var(--ink)"></div>
-    </div>
+    <div class="result" id="result" style="display:none"></div>
+  </section>
 
-    <!-- 전기 지원 여부 -->
-    <div class="sec">
-      <div class="lab">🔌 전기 지원 가능 여부</div>
-      <div class="choices">
-        <label><input type="radio" name="elec" value="가능" checked><span>지원 가능</span></label>
-        <label><input type="radio" name="elec" value="불가능"><span>지원 불가<br>(자가발전기 +5만)</span></label>
+  <!-- ===== 뷰2: 대화형(상담) ===== -->
+  <section class="view" id="view-chat">
+    <main class="stream" id="stream" aria-live="polite"></main>
+    <div class="chips" id="chips"></div>
+    <footer class="composer">
+      <div class="field">
+        <textarea id="input" rows="1" placeholder="메시지를 입력하세요"></textarea>
       </div>
-      <div class="hint">기본 가정용 220V '돼지코' 연결만 가능하면 됩니다 (메뉴별 상이하나 보통 3kw 이내). 전기가 없으면 자가발전기 사용료 5만원이 추가돼요.</div>
-    </div>
-
-    <!-- 출력물 -->
-    <div class="sec">
-      <div class="lab">🖨️ 차량 출력물 (현수막)</div>
-      <div class="hint" style="margin-top:0;margin-bottom:8px"><b>상단·중앙(행사 메뉴판) 2면은 기본으로 무료 제공</b>돼요. <b>좌·우측</b>은 면당 20,000원이고, 견적가(<b>출장비 제외</b>)가 <b>100만원 이상이면 좌·우도 전면 무료</b>예요. 아래 그림은 부착 위치 <b>참고용</b>이고, 실제 선택은 <b>그림 아래 버튼</b>에서 하세요. ※ 좌·우를 선택하지 않으면 <b>기본 현수막(맛있게 드세요)</b>이 자동으로 부착돼요.</div>
-      <div class="truckwrap">
-        <img src="banner-guide.jpg.png" alt="위치별 현수막·출력물 부착 위치 배치도" style="width:100%;display:block;border-radius:12px">
-        <!-- 사진 위 클릭 존: 상단·중앙은 고정 체크, 좌·우·X배너·스티커는 클릭 토글(하단과 동기화). 좌표는 % (필요 시 미세조정) -->
-        <button type="button" class="zonebtn on locked" style="top:32%;left:25%;width:33%;height:10%" aria-label="상단 (기본 무료)"></button>
-        <button type="button" class="zonebtn on locked" style="top:57%;left:28%;width:36%;height:21%" aria-label="행사 메뉴판 (기본 무료)"></button>
-        <button type="button" class="zonebtn" data-face="좌" onclick="toggleFace('좌')" style="top:55%;left:2.5%;width:16.5%;height:22%" aria-label="좌측 현수막 추가"></button>
-        <button type="button" class="zonebtn" data-face="우" onclick="toggleFace('우')" style="top:55%;left:66.5%;width:16.5%;height:22%" aria-label="우측 현수막 추가"></button>
-        <button type="button" class="zonebtn zlight" data-opt="xbanner" onclick="toggleOpt('xbanner')" style="top:54%;left:85%;width:11.5%;height:34%" aria-label="X배너 추가"></button>
-        <button type="button" class="zonebtn zlight" data-opt="sticker" onclick="toggleOpt('sticker')" style="top:80%;left:47%;width:20%;height:14%" aria-label="컵홀더 스티커 추가"></button>
-      </div>
-      <div class="poslabel">📌 현수막 부착 위치 <span class="pl-sub">(상단·중앙은 기본 무료 포함 · 좌·우를 눌러 추가)</span></div>
-      <div class="pos-grid">
-        <div class="poschip on locked">상단<small>기본·무료</small></div>
-        <button type="button" class="poschip" data-face="좌" onclick="toggleFace('좌')">좌측<small>면당 2만</small></button>
-        <div class="poschip on locked">중앙<small>기본·무료</small></div>
-        <button type="button" class="poschip" data-face="우" onclick="toggleFace('우')">우측<small>면당 2만</small></button>
-      </div>
-      <div class="opt">
-        <input type="checkbox" id="xbanner">
-        <svg width="27" height="36" viewBox="0 0 27 36" style="flex:0 0 auto" aria-hidden="true"><rect x="5.5" y="1.5" width="16" height="25" rx="1.6" fill="#E6F0FF" stroke="#2E6BD6" stroke-width="1.4"/><rect x="8.3" y="4.6" width="10.4" height="2.4" rx="1.2" fill="#2E6BD6"/><circle cx="13.5" cy="14.5" r="3.9" fill="#2E6BD6"/><path d="M11.8 14.6l1.3 1.3 2.3-2.5" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="21" width="9" height="1.9" rx="1" fill="#9DBBEA"/><line x1="13.5" y1="26.5" x2="13.5" y2="30.5" stroke="#9C8E82" stroke-width="1.4"/><line x1="7" y1="34" x2="20" y2="28" stroke="#9C8E82" stroke-width="1.3" stroke-linecap="round"/><line x1="20" y1="34" x2="7" y2="28" stroke="#9C8E82" stroke-width="1.3" stroke-linecap="round"/></svg>
-        <span class="nm">차량 옆 X배너 <span class="pr">(2만/개 · 여러 개 가능)</span></span>
-        <input type="number" id="xbannerQty" class="qty" value="1" min="1">
-      </div>
-      <div class="opt">
-        <input type="checkbox" id="sticker">
-        <svg width="28" height="36" viewBox="0 0 28 36" style="flex:0 0 auto" aria-hidden="true"><line x1="16.5" y1="2" x2="14.6" y2="11" stroke="#A9B7CC" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 10.5 Q14 3.5 21.5 10.5 Z" fill="#E4EAF2" stroke="#AEBACC" stroke-width="1.1"/><path d="M6.7 10.5 L21.3 10.5 L19.4 34 L8.6 34 Z" fill="#F4F7FB" stroke="#AEBACC" stroke-width="1.2"/><path d="M7.7 18.5 L20.3 18.5 L19.4 29 L8.6 29 Z" fill="#fff" stroke="#D7DEE8" stroke-width="1"/><circle cx="14" cy="23.6" r="4.3" fill="#27408B"/><path d="M12.7 21.7l3.1 1.9-3.1 1.9z" fill="#fff"/></svg>
-        <span class="nm">컵홀더 로고 스티커 <span class="pr">(컵홀더 기본 제공 · 스티커 1,000장당 +4만)</span></span>
-        <input type="number" id="stickerBundle" class="qty" value="1" min="1">
-      </div>
-    </div>
-
-    <!-- 기타 옵션 -->
-    <div class="sec">
-      <div class="lab">🧩 기타 옵션 (해당 시 체크)</div>
-      <div class="opt">
-        <input type="checkbox" class="ex" data-key="섹터이동">
-        <span class="nm">행사 진행 중 섹터(구역) 이동 <span class="pr">(5만/구역)</span></span>
-        <input type="number" class="qty" data-qty="섹터이동" value="1" min="1">
-      </div>
-      <div class="opt">
-        <input type="checkbox" class="ex" data-key="모니터">
-        <span class="nm">모니터 추가 (스탠바이미GO) <span class="pr">(5만/대)</span></span>
-        <input type="number" class="qty" data-qty="모니터" value="1" min="1">
-      </div>
-    </div>
-
-    <!-- 추가 문의사항 (자유 입력) -->
-    <div class="sec">
-      <div class="lab">💬 추가 문의사항</div>
-      <textarea id="inquiry" rows="3" placeholder="더 궁금한 점이나 요청사항을 자유롭게 적어주세요 (선택)"></textarea>
-      <div class="hint">남겨주시면 담당자가 확인 후 함께 안내드려요.</div>
-    </div>
-
-    <!-- 연락처 (견적 확인 전 입력) -->
-    <div class="sec">
-      <div class="lab">📞 연락처 정보</div>
-      <input type="text" id="cname" placeholder="담당자명 / 회사명">
-      <input type="tel" id="cphone" inputmode="numeric" placeholder="연락처 (예: 010-1234-5678)" style="margin-top:8px">
-      <div class="hint">정확한 견적·상담 안내를 위해 연락처를 확인해요. 입력하면 바로 예상 견적이 표시됩니다.</div>
-    </div>
-
-    <button class="cta" id="calc">견적 확인하기</button>
-  </div>
-
-  <div class="result" id="result" style="display:none"></div>
+      <button class="send" id="send" aria-label="보내기">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </footer>
+  </section>
 </div>
 
 <script>
+/* ===== 탭 전환 ===== */
+function switchTab(mode){
+  var simple = (mode === 'simple');
+  document.body.className = simple ? 'mode-simple' : 'mode-chat';
+  document.getElementById('view-simple').classList.toggle('active', simple);
+  document.getElementById('view-chat').classList.toggle('active', !simple);
+  document.getElementById('tab-simple').classList.toggle('active', simple);
+  document.getElementById('tab-chat').classList.toggle('active', !simple);
+  var sub = document.getElementById('brandSub');
+  if (sub) sub.textContent = simple ? '메뉴만 고르면 견적이 바로 나와요' : '궁금한 점을 편하게 물어보세요';
+  if (simple){
+    window.scrollTo(0, 0);
+  } else {
+    var s = document.getElementById('stream'); if (s) s.scrollTop = s.scrollHeight;
+    var inp = document.getElementById('input'); if (inp) setTimeout(function(){ inp.focus(); }, 60);
+  }
+}
+
 /* ===== 견적 엔진 ===== */
 const MENU=[
  {n:'2종 실속세트',p:3000,c:'커피·음료'},{n:'4종 간편세트',p:3300,c:'커피·음료'},{n:'7종 베이직세트',p:3500,c:'커피·음료'},{n:'15종 클래식세트',p:4000,c:'커피·음료'},
@@ -340,13 +449,13 @@ function toggleOpt(id){
 let lastAlert='';
 async function sendOwnerAlert(text, vars){
   const el=document.getElementById('sendStatus');
-  if(text===lastAlert){ if(el) el.innerHTML='\u2705 담당자에게 이미 전달했어요'; return; }
-  if(el) el.innerHTML='\u23F3 담당자에게 전달 중...';
+  if(text===lastAlert){ if(el) el.innerHTML='✅ 담당자에게 이미 전달했어요'; return; }
+  if(el) el.innerHTML='⏳ 담당자에게 전달 중...';
   try{
     const r=await fetch('/api/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text, vars:vars||null})});
-    if(r.ok){ lastAlert=text; if(el) el.innerHTML='\u2705 담당자에게 견적 요청이 전달됐어요 \u2014 곧 연락드릴게요'; }
-    else { if(el) el.innerHTML='\u26A0\uFE0F 전송이 지연되고 있어요. 잠시 후 다시 누르시거나 전화로 문의해 주세요.'; }
-  }catch(e){ if(el) el.innerHTML='\u26A0\uFE0F 전송 실패 \u2014 네트워크 확인 후 다시 시도해 주세요.'; }
+    if(r.ok){ lastAlert=text; if(el) el.innerHTML='✅ 담당자에게 견적 요청이 전달됐어요 — 곧 연락드릴게요'; }
+    else { if(el) el.innerHTML='⚠️ 전송이 지연되고 있어요. 잠시 후 다시 누르시거나 전화로 문의해 주세요.'; }
+  }catch(e){ if(el) el.innerHTML='⚠️ 전송 실패 — 네트워크 확인 후 다시 시도해 주세요.'; }
 }
 
 document.getElementById('calc').onclick=()=>{
@@ -392,9 +501,9 @@ document.getElementById('calc').onclick=()=>{
     if(offMenu) cinfo.push('메뉴판외 요청: '+offMenu);
     if(inquiry) cinfo.push('문의사항: '+inquiry);
     const why = (menus.length>0 && food<MIN_FOOD) ? ('음식값 최소기준('+won(MIN_FOOD)+') 미달') : '메뉴 미선택/맞춤 문의';
-    const consultText='[푸드트럭 상담 요청]\n'+cinfo.join('\n')+'\n\n\u203B '+why+' \u2014 유선 상담 필요';
+    const consultText='[푸드트럭 상담 요청]\n'+cinfo.join('\n')+'\n\n※ '+why+' — 유선 상담 필요';
     const cb=document.getElementById('result'); cb.style.display='block';
-    cb.innerHTML='<div class="consult"><b>\uD83D\uDCDE 유선 상담 안내</b>'
+    cb.innerHTML='<div class="consult"><b>📞 유선 상담 안내</b>'
       +'입력해 주신 내용은 담당자가 <b>유선으로 직접 상담</b> 도와드릴게요.<br>남겨주신 연락처로 곧 연락드리겠습니다. 😊</div>'
       +'<div id="sendStatus" class="qnote" style="margin-top:10px;font-weight:700;color:var(--tomato-deep)"></div>';
     cb.scrollIntoView({behavior:'smooth'});
@@ -515,10 +624,123 @@ document.getElementById('calc').onclick=()=>{
   });
  }catch(err){
   const eb=document.getElementById('result'); eb.style.display='block';
-  eb.innerHTML='<div class="flagcard"><h3>\u26A0\uFE0F 잠시 오류가 났어요</h3><p>'+(err&&err.message?err.message:String(err))+'</p><p style="margin-top:6px;font-size:12px;color:var(--muted)">이 메시지를 캡처해 알려주시면 바로 고쳐드릴게요.</p></div>';
+  eb.innerHTML='<div class="flagcard"><h3>⚠️ 잠시 오류가 났어요</h3><p>'+(err&&err.message?err.message:String(err))+'</p><p style="margin-top:6px;font-size:12px;color:var(--muted)">이 메시지를 캡처해 알려주시면 바로 고쳐드릴게요.</p></div>';
   eb.scrollIntoView({behavior:'smooth'});
  }
 };
+</script>
+
+<script>
+/* ===== 대화형 챗봇 ===== */
+(function(){
+  const streamEl = document.getElementById('stream');
+  const chipsEl  = document.getElementById('chips');
+  const inputEl  = document.getElementById('input');
+  const sendEl   = document.getElementById('send');
+
+  // 대화 히스토리 (API에 매번 전체를 함께 보낸다 — AI는 이전 대화를 기억하지 못하므로)
+  const history = [];
+  let busy = false;
+
+  const GREETING = '안녕하세요! 푸드트럭하우스 견적 도우미예요 🚚\n행사에 필요하신 메뉴나 인원, 지역을 알려주시면 정확한 견적을 안내해 드릴게요.';
+  const QUICK = ['견적 받아보고 싶어요', '메뉴가 궁금해요', '최소 주문 금액이 있나요?', '출장 가능 지역은?'];
+
+  function addBubble(role, text){
+    const row = document.createElement('div');
+    row.className = 'row ' + (role === 'user' ? 'me' : 'bot');
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    b.textContent = text;
+    row.appendChild(b);
+    streamEl.appendChild(row);
+    scrollDown();
+    return row;
+  }
+
+  function showTyping(){
+    const row = document.createElement('div');
+    row.className = 'row bot';
+    row.id = 'typing-row';
+    row.innerHTML = '<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+    streamEl.appendChild(row);
+    scrollDown();
+  }
+  function hideTyping(){ const t = document.getElementById('typing-row'); if (t) t.remove(); }
+  function scrollDown(){ streamEl.scrollTop = streamEl.scrollHeight; }
+
+  function renderChips(list){
+    chipsEl.innerHTML = '';
+    (list || []).forEach(function(txt){
+      const b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = txt;
+      b.onclick = function(){ if (!busy) send(txt); };
+      chipsEl.appendChild(b);
+    });
+  }
+
+  function showError(msg){
+    const p = document.createElement('div');
+    p.className = 'err';
+    p.textContent = msg;
+    streamEl.appendChild(p);
+    scrollDown();
+  }
+
+  async function send(text){
+    text = (text != null ? text : inputEl.value).trim();
+    if (!text || busy) return;
+
+    busy = true;
+    sendEl.disabled = true;
+    inputEl.value = '';
+    autoGrow();
+    renderChips([]);
+
+    addBubble('user', text);
+    history.push({ role: 'user', content: text });
+
+    showTyping();
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history })
+      });
+      const data = await res.json();
+      hideTyping();
+
+      if (!res.ok || data.error) {
+        showError('⚠️ ' + (data.error || '일시적인 오류가 발생했어요. 잠시 후 다시 시도해 주세요.'));
+      } else {
+        const reply = data.reply || '죄송해요, 다시 한 번 말씀해 주시겠어요?';
+        addBubble('assistant', reply);
+        history.push({ role: 'assistant', content: reply });
+      }
+    } catch (e) {
+      hideTyping();
+      showError('⚠️ 연결에 실패했어요. 네트워크를 확인해 주세요.');
+    } finally {
+      busy = false;
+      sendEl.disabled = false;
+      inputEl.focus();
+    }
+  }
+
+  function autoGrow(){
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 110) + 'px';
+  }
+
+  sendEl.addEventListener('click', function(){ send(); });
+  inputEl.addEventListener('input', autoGrow);
+  inputEl.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+
+  addBubble('assistant', GREETING);
+  renderChips(QUICK);
+})();
 </script>
 </body>
 </html>
