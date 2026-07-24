@@ -145,6 +145,11 @@ select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:va
 @keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .bot .bubble{background:var(--bot);color:var(--ink);border-top-left-radius:6px}
 .me  .bubble{background:var(--accent);color:#fff;border-top-right-radius:6px}
+.bubble strong{font-weight:700}
+.bubble a{word-break:break-all}
+.bot .bubble a{color:var(--accent);font-weight:600;text-decoration:underline}
+.me  .bubble a{color:#fff;text-decoration:underline}
+.bubble img{max-width:100%;border-radius:12px;margin-top:8px;display:block;border:1px solid var(--line)}
 .typing{display:inline-flex;gap:5px;align-items:center;padding:3px 2px}
 .typing i{width:7px;height:7px;border-radius:50%;background:#B0B8C1;animation:blink 1.3s infinite}
 .typing i:nth-child(2){animation-delay:.18s}
@@ -651,12 +656,42 @@ document.getElementById('calc').onclick=()=>{
   const GREETING = '안녕하세요! 푸드트럭하우스 견적 도우미예요 🚚\n행사에 필요하신 메뉴나 인원, 지역을 알려주시면 정확한 견적을 안내해 드릴게요.';
   const QUICK = ['견적 받아보고 싶어요', '메뉴가 궁금해요', '최소 주문 금액이 있나요?', '출장 가능 지역은?'];
 
+  function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  // 봇 메시지: 마크다운(굵게·링크·이미지)과 맨 URL을 안전하게 HTML로 변환 (클릭 가능 + 사진 표시)
+  function renderRich(raw){
+    const IMG=/!\[([^\]]*)\]\(((?:https?:|\/)[^)\s]+)\)/;
+    const LINK=/\[([^\]]+)\]\(((?:https?:|tel:|mailto:|\/)[^)\s]+)\)/;
+    const BOLD=/\*\*([^*\n]+)\*\*/;
+    const URL=/(?:https?:\/\/|www\.)[^\s<)]+/;
+    const re=new RegExp(IMG.source+'|'+LINK.source+'|'+BOLD.source+'|'+URL.source,'g');
+    let out='',last=0,m;
+    while((m=re.exec(raw))){
+      out+=escHtml(raw.slice(last,m.index));
+      last=re.lastIndex;
+      if(m[1]!==undefined&&m[2]!==undefined){
+        out+='<img src="'+escHtml(m[2])+'" alt="'+escHtml(m[1])+'" loading="lazy" onerror="this.remove()">';
+      }else if(m[3]!==undefined&&m[4]!==undefined){
+        out+='<a href="'+escHtml(m[4])+'" target="_blank" rel="noopener">'+escHtml(m[3])+'</a>';
+      }else if(m[5]!==undefined){
+        out+='<strong>'+escHtml(m[5])+'</strong>';
+      }else{
+        const u=m[0],h=/^www\./.test(u)?('https://'+u):u;
+        out+='<a href="'+escHtml(h)+'" target="_blank" rel="noopener">'+escHtml(u)+'</a>';
+      }
+    }
+    out+=escHtml(raw.slice(last));
+    return out;
+  }
   function addBubble(role, text){
     const row = document.createElement('div');
     row.className = 'row ' + (role === 'user' ? 'me' : 'bot');
     const b = document.createElement('div');
     b.className = 'bubble';
-    b.textContent = text;
+    if (role === 'user') { b.textContent = text; }          // 사용자 입력은 원문 그대로(안전)
+    else {
+      b.innerHTML = renderRich(text);                       // 봇 메시지는 마크다운/링크/이미지 렌더
+      b.querySelectorAll('img').forEach(im=>im.addEventListener('load', scrollDown));
+    }
     row.appendChild(b);
     streamEl.appendChild(row);
     scrollDown();
