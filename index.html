@@ -660,7 +660,12 @@ document.getElementById('calc').onclick=()=>{
   let busy = false;
 
   const GREETING = '안녕하세요! 푸드트럭하우스 견적 도우미예요 🚚\n행사에 필요하신 메뉴나 인원, 지역을 알려주시면 정확한 견적을 안내해 드릴게요.';
-  const QUICK = ['견적 받아보고 싶어요', '메뉴가 궁금해요', '행사 사례 사진 보고 싶어요', '출장 가능 지역은?'];
+  const QUICK = [
+    { label: '견적 받아보고 싶어요' },
+    { label: '메뉴가 궁금해요' },
+    { label: '📸 행사 사례 보기', url: 'https://blog.naver.com/qnehdtksjw' },
+    { label: '출장 가능 지역은?' },
+  ];
 
   function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   // 봇 메시지: 마크다운(굵게·링크·이미지)과 맨 URL을 안전하게 HTML로 변환 (클릭 가능 + 사진 표시)
@@ -717,11 +722,15 @@ document.getElementById('calc').onclick=()=>{
 
   function renderChips(list){
     chipsEl.innerHTML = '';
-    (list || []).forEach(function(txt){
+    (list || []).forEach(function(item){
+      const label = (typeof item === 'string') ? item : item.label;
+      const url = (item && item.url) ? item.url : null;
       const b = document.createElement('button');
       b.className = 'chip';
-      b.textContent = txt;
-      b.onclick = function(){ if (!busy) send(txt); };
+      b.textContent = label;
+      b.onclick = url
+        ? function(){ window.open(url, '_blank', 'noopener'); }   // 링크 칩: 모델 거치지 않고 바로 열기
+        : function(){ if (!busy) send(label); };
       chipsEl.appendChild(b);
     });
   }
