@@ -6,7 +6,7 @@
 <title>푸드트럭하우스 · 간편견적 &amp; 상담</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
 :root{
@@ -19,29 +19,32 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%}
-body{font-family:'Gowun Dodum',-apple-system,sans-serif;color:var(--ink);background:var(--paper);display:flex;justify-content:center;min-height:100dvh}
+/* 본문은 가독성 높은 Pretendard, 브랜드 포인트(로고·버튼·금액)만 Jua */
+body{font-family:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+     font-size:16px;line-height:1.6;letter-spacing:-.2px;color:var(--ink);background:var(--paper);
+     display:flex;justify-content:center;min-height:100dvh;-webkit-font-smoothing:antialiased}
 
 /* ===== 공용 셸 ===== */
-.shell{width:100%;max-width:480px;background:var(--card);display:flex;flex-direction:column;min-height:100dvh}
+.shell{width:100%;max-width:560px;background:var(--card);display:flex;flex-direction:column;min-height:100dvh}
 body.mode-simple{padding:18px 18px 40px;background:var(--paper)}
 body.mode-simple .shell{border-radius:24px;border:1px solid var(--line);overflow:hidden;box-shadow:0 18px 54px rgba(200,65,43,.14);min-height:auto}
 body.mode-chat{padding:0;background:var(--page)}
 body.mode-chat .shell{height:100dvh;min-height:0;overflow:hidden}
 
 /* 브랜드 헤더 (공용) */
-.topbar{flex:0 0 auto;background:linear-gradient(135deg,var(--tomato),var(--tomato-deep));color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px}
-.topbar .logo{width:42px;height:42px;border-radius:13px;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 4px 10px rgba(0,0,0,.12);flex:0 0 auto}
-.topbar .brand{flex:1;min-width:0;line-height:1.2}
-.topbar .brand h1{font-family:'Jua',sans-serif;font-size:19px;font-weight:400}
-.topbar .brand .sub{font-size:12px;opacity:.92;margin-top:2px}
-.topbar .kakao-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;background:#FEE500;color:#3C1E1E;text-decoration:none;font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:999px;letter-spacing:-.2px;white-space:nowrap;transition:.12s;font-family:'Gowun Dodum',sans-serif}
+.topbar{flex:0 0 auto;background:linear-gradient(135deg,var(--tomato),var(--tomato-deep));color:#fff;padding:18px 20px;display:flex;align-items:center;gap:13px}
+.topbar .logo{width:48px;height:48px;border-radius:14px;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 10px rgba(0,0,0,.12);flex:0 0 auto}
+.topbar .brand{flex:1;min-width:0;line-height:1.25}
+.topbar .brand h1{font-family:'Jua',sans-serif;font-size:22px;font-weight:400;letter-spacing:0}
+.topbar .brand .sub{font-size:13px;opacity:.94;margin-top:3px}
+.topbar .kakao-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;background:#FEE500;color:#3C1E1E;text-decoration:none;font-size:13.5px;font-weight:700;padding:9px 14px;border-radius:999px;letter-spacing:-.2px;white-space:nowrap;transition:.12s}
 .topbar .kakao-btn:hover{filter:brightness(.96)}
 .topbar .kakao-btn:active{transform:scale(.96)}
 
 /* 탭 */
 .tabs{flex:0 0 auto;display:flex;background:var(--card);border-bottom:1px solid var(--line)}
-.tab{flex:1;text-align:center;padding:11px 8px 10px;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;font-family:'Jua',sans-serif;font-size:14.5px;color:var(--muted);transition:.15s}
-.tab .desc{display:block;font-family:'Gowun Dodum',sans-serif;font-size:10.5px;font-weight:400;color:var(--muted);margin-top:3px}
+.tab{flex:1;text-align:center;padding:13px 8px 11px;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;font-family:inherit;font-size:16.5px;font-weight:700;color:var(--muted);transition:.15s}
+.tab .desc{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-top:4px}
 .tab.active{color:var(--tomato-deep);border-bottom-color:var(--tomato)}
 .tab.active .desc{color:#C98B7A}
 
@@ -51,67 +54,63 @@ body.mode-chat .shell{height:100dvh;min-height:0;overflow:hidden}
 #view-chat.active{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 
 /* ===== 선택형(간편견적) ===== */
-.body{padding:20px 20px 8px}
-.sec{margin-bottom:20px}
-.sec > .lab{font-family:'Jua',sans-serif;font-size:14px;color:var(--tomato-deep);margin-bottom:9px;display:flex;align-items:center;gap:7px}
-.hint{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.5}
-.mrow{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.body{padding:22px 22px 8px}
+.sec{margin-bottom:24px}
+.sec > .lab{font-size:16.5px;font-weight:700;color:var(--tomato-deep);margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.hint{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6}
+.mrow{display:flex;gap:8px;margin-bottom:9px;align-items:center}
 .mrow select{flex:1.7}
 .mrow input{flex:1;min-width:0}
-.mrow .del{flex:0 0 auto;width:34px;height:42px;border:none;background:var(--amber-soft);color:var(--tomato-deep);border-radius:11px;font-size:16px;cursor:pointer}
+.mrow .del{flex:0 0 auto;width:38px;height:48px;border:none;background:var(--amber-soft);color:var(--tomato-deep);border-radius:12px;font-size:17px;cursor:pointer}
 .mrow .del:hover{background:var(--amber);color:#fff}
 select,input[type=number],input[type=text],input[type=tel],.body textarea{
-  width:100%;height:42px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;
-  font-family:'Gowun Dodum',sans-serif;font-size:14.5px;background:var(--field);color:var(--ink);
+  width:100%;height:48px;border:1.5px solid var(--line);border-radius:12px;padding:0 13px;
+  font-family:inherit;font-size:16px;background:var(--field);color:var(--ink);
 }
-.body textarea{height:auto;padding:10px 12px;resize:vertical;min-height:46px}
+.body textarea{height:auto;padding:12px 13px;resize:vertical;min-height:54px;line-height:1.6}
 select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:var(--tomato)}
-.addbtn{margin-top:2px;background:none;border:1.5px dashed var(--amber);color:#B07F12;border-radius:12px;padding:9px;width:100%;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer}
+.addbtn{margin-top:3px;background:none;border:1.5px dashed var(--amber);color:#B07F12;border-radius:12px;padding:11px;width:100%;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
 .addbtn:hover{background:var(--amber-soft)}
 .choices{display:flex;gap:8px;flex-wrap:wrap}
 .choices label{flex:1;min-width:90px;position:relative}
 .choices input{position:absolute;opacity:0}
-.choices span{display:block;text-align:center;padding:10px 6px;border:1.5px solid var(--line);border-radius:12px;font-size:13px;cursor:pointer;background:var(--field);line-height:1.3}
-.choices input:checked + span{border-color:var(--tomato);background:#FCE4DC;color:var(--tomato-deep);font-weight:600}
+.choices span{display:block;text-align:center;padding:12px 7px;border:1.5px solid var(--line);border-radius:12px;font-size:14.5px;font-weight:500;cursor:pointer;background:var(--field);line-height:1.35}
+.choices input:checked + span{border-color:var(--tomato);background:#FCE4DC;color:var(--tomato-deep);font-weight:700}
 .timewrap{display:flex;align-items:center;gap:9px}
 .timewrap select{flex:1}
-.timewrap .tilde{color:var(--muted);font-size:14px}
-.opt{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.timewrap .tilde{color:var(--muted);font-size:15px}
+.opt{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line)}
 .opt:last-child{border-bottom:none}
-.opt input[type=checkbox]{width:18px;height:18px;accent-color:var(--tomato);flex:0 0 auto}
-.opt .nm{flex:1;font-size:14px;line-height:1.35}
-.opt .pr{font-size:12px;color:var(--muted)}
-.opt .qty{width:60px;height:34px;flex:0 0 auto;text-align:center}
-/* 차량 도식 */
-.truck{width:100%;background:var(--field);border:1.5px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
-.zone{cursor:pointer;transition:.12s}
-.zone:hover{opacity:.85}
-.zlabel{font-family:'Gowun Dodum',sans-serif;font-size:11px;fill:var(--ink);pointer-events:none}
-.cta{margin:6px 0 14px;background:var(--tomato);color:#fff;border:none;width:100%;padding:15px;border-radius:15px;font-family:'Jua',sans-serif;font-size:17px;cursor:pointer;transition:.15s}
+.opt input[type=checkbox]{width:20px;height:20px;accent-color:var(--tomato);flex:0 0 auto}
+.opt .nm{flex:1;font-size:15px;line-height:1.45}
+.opt .pr{font-size:13px;color:var(--muted)}
+.opt .lead{display:block;font-size:12.5px;font-weight:700;color:var(--tomato-deep);margin-top:3px}
+.opt .qty{width:66px;height:40px;flex:0 0 auto;text-align:center}
+.cta{margin:8px 0 14px;background:var(--tomato);color:#fff;border:none;width:100%;padding:17px;border-radius:15px;font-family:'Jua',sans-serif;font-size:19px;cursor:pointer;transition:.15s}
 .cta:hover{background:var(--tomato-deep);transform:translateY(-1px)}
-.tochat{margin:0 0 18px;background:#FFF7F0;border:1.5px dashed var(--amber);color:#B07F12;border-radius:14px;padding:12px;width:100%;font-family:'Gowun Dodum',sans-serif;font-size:13px;cursor:pointer;line-height:1.5;transition:.15s}
-.tochat b{color:var(--tomato-deep)}
+.tochat{margin:0 0 20px;background:#FFF7F0;border:1.5px dashed var(--amber);color:#B07F12;border-radius:14px;padding:14px;width:100%;font-family:inherit;font-size:14.5px;cursor:pointer;line-height:1.6;transition:.15s}
+.tochat b{color:var(--tomato-deep);font-size:15.5px}
 .tochat:hover{background:var(--amber-soft)}
-.result{padding:0 20px 22px}
-.quote{background:var(--card);border:1.5px solid var(--amber);border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(242,181,68,.2)}
-.quote h3{font-family:'Jua',sans-serif;font-weight:400;font-size:17px;margin-bottom:4px;display:flex;gap:7px;align-items:center}
-.badge{display:inline-block;font-size:11.5px;padding:3px 11px;border-radius:20px;margin-bottom:12px}
+.result{padding:0 22px 24px}
+.quote{background:var(--card);border:1.5px solid var(--amber);border-radius:18px;padding:20px;box-shadow:0 8px 22px rgba(242,181,68,.2)}
+.quote h3{font-family:'Jua',sans-serif;font-weight:400;font-size:19px;margin-bottom:5px;display:flex;gap:7px;align-items:center}
+.badge{display:inline-block;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:13px}
 .badge.fix{background:#E5F4EC;color:var(--ok)} .badge.range{background:var(--amber-soft);color:#B07F12}
-.qline{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line)}
-.qline span:last-child{font-weight:600}
-.qinfo{font-size:12px;color:var(--muted);padding:4px 0}
-.qtotal{display:flex;justify-content:space-between;align-items:baseline;margin-top:13px;padding-top:11px;border-top:2px solid var(--ink)}
-.qtotal .lab{font-size:13px;color:var(--muted)}
-.qtotal .val{font-family:'Jua',sans-serif;font-size:25px;color:var(--tomato-deep)}
-.qnote{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.55}
-.consult{margin-top:12px;background:#FFF4F1;border:1.5px solid var(--tomato);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.6}
-.consult b{display:block;color:var(--tomato-deep);font-weight:700;margin-bottom:5px;font-size:13.5px}
-.echo{margin-top:10px;background:var(--field);border:1px dashed var(--amber);border-radius:10px;padding:9px 11px;font-size:13px;color:var(--ink);font-weight:600}
-.echo span{display:block;font-size:11px;color:var(--muted);margin-top:3px;font-weight:400}
+.qline{display:flex;justify-content:space-between;gap:10px;font-size:15px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.qline span:last-child{font-weight:700;white-space:nowrap}
+.qinfo{font-size:13px;color:var(--muted);padding:5px 0}
+.qtotal{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:14px;padding-top:12px;border-top:2px solid var(--ink)}
+.qtotal .lab{font-size:14px;color:var(--muted)}
+.qtotal .val{font-family:'Jua',sans-serif;font-size:27px;color:var(--tomato-deep);text-align:right}
+.qnote{font-size:13px;color:var(--muted);margin-top:11px;line-height:1.6}
+.consult{margin-top:13px;background:#FFF4F1;border:1.5px solid var(--tomato);border-radius:12px;padding:13px 14px;font-size:14px;line-height:1.65}
+.consult b{display:block;color:var(--tomato-deep);font-weight:700;margin-bottom:6px;font-size:15px}
+.echo{margin-top:11px;background:var(--field);border:1px dashed var(--amber);border-radius:10px;padding:11px 12px;font-size:14.5px;color:var(--ink);font-weight:700}
+.echo span{display:block;font-size:12.5px;color:var(--muted);margin-top:4px;font-weight:400}
 .flagcard{background:#FFF4F1;border:1.5px solid var(--tomato);border-radius:18px;padding:18px}
-.flagcard h3{font-family:'Jua',sans-serif;font-weight:400;font-size:16px;color:var(--tomato-deep);margin-bottom:7px;display:flex;gap:7px;align-items:center}
-.flagcard p{font-size:13.5px;line-height:1.6}
-.flagcard .reason{margin-top:9px;font-size:12.5px;background:#fff;border-radius:10px;padding:9px 11px;color:var(--ink)}
+.flagcard h3{font-family:'Jua',sans-serif;font-weight:400;font-size:18px;color:var(--tomato-deep);margin-bottom:8px;display:flex;gap:7px;align-items:center}
+.flagcard p{font-size:14.5px;line-height:1.65}
+.flagcard .reason{margin-top:10px;font-size:13.5px;background:#fff;border-radius:10px;padding:10px 12px;color:var(--ink)}
 .truckwrap{position:relative;width:100%;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);margin-bottom:10px;line-height:0}
 .truckwrap img{width:100%;display:block}
 .zonebtn{position:absolute;border:2.5px dashed rgba(232,85,59,.55);border-radius:8px;background:rgba(232,85,59,.10);cursor:pointer;padding:0}
@@ -125,11 +124,11 @@ select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:va
 .zonebtn.zlight.on{border-style:solid;border-color:#1E9BFF;background:rgba(30,155,255,.10)}
 .facelocked{display:inline-flex;align-items:center;gap:8px;margin:0 0 10px;font-size:13px;font-weight:700;color:var(--tomato-deep);background:#FCE4DC;border:1.5px solid rgba(232,85,59,.4);border-radius:10px;padding:8px 13px}
 .facelocked .fl-tag{font-weight:600;color:#9C6B5E;font-size:11.5px}
-.poslabel{font-size:13px;font-weight:700;color:var(--tomato-deep);margin:12px 0 8px}
-.poslabel .pl-sub{font-weight:600;color:#9C8E82;font-size:11.5px}
+.poslabel{font-size:14.5px;font-weight:700;color:var(--tomato-deep);margin:14px 0 9px}
+.poslabel .pl-sub{font-weight:500;color:#9C8E82;font-size:12.5px}
 .pos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.poschip{position:relative;border:2px solid var(--line);background:#fff;border-radius:12px;padding:13px 6px 12px;font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;line-height:1.2;font-family:'Gowun Dodum',sans-serif;transition:.15s}
-.poschip small{display:block;font-size:10.5px;font-weight:600;color:#9C8E82;margin-top:3px}
+.poschip{position:relative;border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px 6px 13px;font-size:15.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;line-height:1.25;font-family:inherit;transition:.15s}
+.poschip small{display:block;font-size:11.5px;font-weight:600;color:#9C8E82;margin-top:4px}
 .poschip:hover{border-color:#1E9BFF}
 .poschip.on{border-color:#1E9BFF;background:rgba(30,155,255,.12);color:#0D6FBE}
 .poschip.on small{color:#3E96D6}
@@ -142,7 +141,7 @@ select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:va
 .stream::-webkit-scrollbar{width:0}
 .row{display:flex;max-width:100%}
 .row.me{justify-content:flex-end}
-.bubble{max-width:80%;padding:11px 14px;font-size:14.5px;line-height:1.6;border-radius:18px;word-break:break-word;white-space:pre-wrap;letter-spacing:-.2px;animation:rise .26s cubic-bezier(.2,.8,.2,1)}
+.bubble{max-width:82%;padding:13px 16px;font-size:16px;line-height:1.65;border-radius:18px;word-break:break-word;white-space:pre-wrap;letter-spacing:-.2px;animation:rise .26s cubic-bezier(.2,.8,.2,1)}
 @keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .bot .bubble{background:var(--bot);color:var(--ink);border-top-left-radius:6px}
 .me  .bubble{background:var(--accent);color:#fff;border-top-right-radius:6px}
@@ -152,15 +151,15 @@ select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:va
 .typing i:nth-child(3){animation-delay:.36s}
 @keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
 .chips{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;padding:2px 18px 14px}
-.chip{border:1px solid #E1E5EA;background:var(--white);color:#4E5968;border-radius:999px;padding:9px 15px;font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;transition:.12s;letter-spacing:-.2px}
+.chip{border:1px solid #E1E5EA;background:var(--white);color:#4E5968;border-radius:999px;padding:10px 16px;font-family:inherit;font-size:14.5px;font-weight:500;cursor:pointer;transition:.12s;letter-spacing:-.2px}
 .chip:hover{background:#F7F8FA;border-color:#D5DAE0}
 .chip:active{transform:scale(.97)}
 .composer{flex:0 0 auto;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--line);display:flex;align-items:flex-end;gap:9px}
 .composer .field{flex:1;display:flex;align-items:flex-end;background:#F2F4F6;border-radius:22px;padding:4px 6px 4px 16px}
-.composer textarea{flex:1;resize:none;border:none;background:transparent;padding:8px 0;font-family:inherit;font-size:14.5px;color:var(--ink);line-height:1.45;max-height:110px;outline:none;letter-spacing:-.2px}
+.composer textarea{flex:1;resize:none;border:none;background:transparent;padding:9px 0;font-family:inherit;font-size:16px;color:var(--ink);line-height:1.5;max-height:120px;outline:none;letter-spacing:-.2px}
 .composer textarea::placeholder{color:#AEB5BD}
-.send{flex:0 0 auto;width:40px;height:40px;border:none;border-radius:50%;background:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
-.send svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.send{flex:0 0 auto;width:44px;height:44px;border:none;border-radius:50%;background:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
+.send svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .send:hover:not(:disabled){background:var(--accent-press)}
 .send:active:not(:disabled){transform:scale(.94)}
 .send:disabled{background:#D5DAE0;cursor:not-allowed}
@@ -195,7 +194,7 @@ select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:va
         <div class="lab">🍴 메뉴 선택</div>
         <div id="menuRows"></div>
         <button class="addbtn" id="addMenu">＋ 메뉴 추가</button>
-        <div class="hint">여러 메뉴를 동시에 주문하실 수 있어요. (예: 커피 500잔 + 핫도그 200개)</div>
+        <div class="hint">여러 메뉴를 동시에 주문하실 수 있어요. (예: 커피 500잔 + 핫도그 200개)<br>※ 최소 수량 — <b>간식·음료·디저트·분식·시즌 50인분</b> / <b>식사 100인분</b> / <b>출장뷔페 200인분</b>부터</div>
       </div>
 
       <!-- 추가 요청 메뉴 -->
@@ -286,7 +285,7 @@ select:focus,.body input:focus,.body textarea:focus{outline:none;border-color:va
         <div class="opt">
           <input type="checkbox" id="sticker">
           <svg width="28" height="36" viewBox="0 0 28 36" style="flex:0 0 auto" aria-hidden="true"><line x1="16.5" y1="2" x2="14.6" y2="11" stroke="#A9B7CC" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 10.5 Q14 3.5 21.5 10.5 Z" fill="#E4EAF2" stroke="#AEBACC" stroke-width="1.1"/><path d="M6.7 10.5 L21.3 10.5 L19.4 34 L8.6 34 Z" fill="#F4F7FB" stroke="#AEBACC" stroke-width="1.2"/><path d="M7.7 18.5 L20.3 18.5 L19.4 29 L8.6 29 Z" fill="#fff" stroke="#D7DEE8" stroke-width="1"/><circle cx="14" cy="23.6" r="4.3" fill="#27408B"/><path d="M12.7 21.7l3.1 1.9-3.1 1.9z" fill="#fff"/></svg>
-          <span class="nm">컵홀더 로고 스티커 <span class="pr">(컵홀더 기본 제공 · 스티커 1,000장당 +4만)</span></span>
+          <span class="nm">컵홀더 로고 스티커 <span class="pr">(컵홀더 기본 제공 · 스티커 1,000장당 +4만)</span><span class="lead">⏱ 스티커 제작기간 1주일 소요</span></span>
           <input type="number" id="stickerBundle" class="qty" value="1" min="1">
         </div>
       </div>
@@ -374,11 +373,13 @@ const MENU=[
 ];
 const CATS=['시즌','커피·음료','간식','디저트·베이커리','분식','식사','뷔페'];
 const REGION={'서울·경기남부':100000,'경기북부·외곽':120000,'천안·아산':120000,'충청도권':150000,'강원도권':200000,'전라북도권':200000,'전라남도권':300000,'경상북도권':200000,'경상남도권':300000,'제주·섬지역권':0};
-const MIN_QTY=100;
+/* 카테고리별 최소 수량 — 간식류 50인분 / 식사 100인분 / 뷔페 200인분 */
+const MIN_QTY_BY_CAT={'시즌':50,'커피·음료':50,'간식':50,'디저트·베이커리':50,'분식':50,'식사':100,'뷔페':200};
+const MIN_QTY=50;   // 메뉴 미선택 상태의 기본 하한
 const GEN=50000, OVER_HOUR=30000, XBANNER=20000, STICKER=40000, SECTOR=50000, MONITOR=50000;
 const MIN_FOOD=600000, BASE_HOURS=3, RANGE_LOW=1200000, RANGE_HIGH=1500000, VAT=0.10;
 const won = n => Math.round(n).toLocaleString('ko-KR')+'원';
-const minQty = m => Math.max(MIN_QTY, m.m||0);
+const minQty = m => Math.max(MIN_QTY_BY_CAT[m.c]||MIN_QTY, m.m||0);
 
 /* 메뉴 드롭다운 */
 function menuOptions(){
@@ -466,7 +467,7 @@ document.getElementById('calc').onclick=()=>{
     const m=MENU[+v]; const mq=minQty(m);
     let q=parseInt(r.querySelector('.mqty').value,10)||0;
     if(q<mq){ adjusts.push(`${m.n}은 최소 ${mq}인분부터 가능해 ${mq}인분으로 맞췄어요`); q=mq; r.querySelector('.mqty').value=mq; }
-    food+=m.p*q; menus.push({label:m.n, qty:q, amount:m.p*q});
+    food+=m.p*q; menus.push({label:m.n, qty:q, amount:m.p*q, cat:m.c});
   });
 
   const offMenu=document.getElementById('offMenu').value.trim();
@@ -542,6 +543,10 @@ document.getElementById('calc').onclick=()=>{
   if(loc==='미정') reasons.push('트럭 진행 장소가 미정이라 확정되면 더 정확해져요');
   if(loc==='허가필요') reasons.push('학교·공원 등은 허가 문제로 인근에서 진행될 수 있어요');
   if(region==='제주·섬지역권') reasons.push('제주·섬지역 출장비는 담당자가 별도로 상세히 안내드려요');
+  // 출장비는 '차량 1대 기준'. 메뉴 구성이 다양하면 조리 설비상 차량이 2대 이상 필요할 수 있어 담당자 확인으로 연결한다.
+  const catCount=new Set(menus.map(x=>x.cat)).size;
+  const multiTruckLikely = menus.length>=4 || catCount>=3;
+  if(multiTruckLikely) reasons.push('메뉴 구성이 다양해 차량 2대 이상 운영이 필요할 수 있어요 — 출장비가 추가될 수 있어 담당자가 확인 후 정확히 안내드려요');
   if(menus.length>0 && food<MIN_FOOD) reasons.unshift(`음식값이 최소 기준(${won(MIN_FOOD)})보다 적어요 — 인분·메뉴를 추가하면 진행돼요`);
   const large = subtotal>=RANGE_HIGH;
   const needConsult = reasons.length>0 || large;
@@ -552,11 +557,11 @@ document.getElementById('calc').onclick=()=>{
   const exact = subtotal<RANGE_LOW && !needConsult;
 
   let lines=items.map(m=>`<div class="qline"><span>${m.label} × ${m.qty}인분</span><span>${won(m.amount)}</span></div>`).join('');
-  if(region) lines+=`<div class="qline"><span>출장비 (${region})</span><span>${won(travel)}</span></div>`;
+  if(region) lines+=`<div class="qline"><span>출장비 (${region}) <span style="color:var(--muted);font-size:13px">· 차량 1대 기준</span></span><span>${won(travel)}</span></div>`;
   if(gen) lines+=`<div class="qline"><span>자가발전기 사용료</span><span>${won(gen)}</span></div>`;
   if(overFee) lines+=`<div class="qline"><span>추가시간 ${extraHours}시간</span><span>${won(overFee)}</span></div>`;
   if(xb) lines+=`<div class="qline"><span>X배너 ${xbannerQty}개</span><span>${won(xb)}</span></div>`;
-  if(stk) lines+=`<div class="qline"><span>원형 스티커 ${stickerBundle*1000}장</span><span>${won(stk)}</span></div>`;
+  if(stk) lines+=`<div class="qline"><span>원형 스티커 ${stickerBundle*1000}장 <span style="color:var(--tomato-deep);font-size:13px;font-weight:700">· 제작 1주일 소요</span></span><span>${won(stk)}</span></div>`;
   if(sector) lines+=`<div class="qline"><span>섹터이동 ×${exMap['섹터이동']}</span><span>${won(sector)}</span></div>`;
   if(monitor) lines+=`<div class="qline"><span>모니터(스탠바이미GO) ×${exMap['모니터']}</span><span>${won(monitor)}</span></div>`;
 
@@ -583,11 +588,12 @@ document.getElementById('calc').onclick=()=>{
   // ----- 카톡/문자 알림: 견적 안내 전체 내역을 텍스트로 -----
   const btxt=[];
   items.forEach(m=>btxt.push('- '+m.label+' '+m.qty+'인분: '+won(m.amount)));
-  if(travel) btxt.push('- 출장비('+region+'): '+won(travel));
+  if(travel) btxt.push('- 출장비('+region+', 차량 1대 기준): '+won(travel));
+  if(multiTruckLikely) btxt.push('  ※ 메뉴 다양 — 차량 2대 이상 여부 확인 필요(출장비 추가 가능)');
   if(gen) btxt.push('- 자가발전기: '+won(gen));
   if(overFee) btxt.push('- 추가시간 '+extraHours+'시간: '+won(overFee));
   if(xb) btxt.push('- X배너 '+xbannerQty+'개: '+won(xb));
-  if(stk) btxt.push('- 원형스티커 '+(stickerBundle*1000)+'장: '+won(stk));
+  if(stk) btxt.push('- 원형스티커 '+(stickerBundle*1000)+'장: '+won(stk)+' (제작 1주일 소요)');
   if(sector) btxt.push('- 섹터이동 '+exMap['섹터이동']+'구역: '+won(sector));
   if(monitor) btxt.push('- 모니터 '+exMap['모니터']+'대: '+won(monitor));
   bannerRows.forEach(b=>btxt.push('- '+b.f+' 현수막: '+(b.free?'무료':won(20000))));
