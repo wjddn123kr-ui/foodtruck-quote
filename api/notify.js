@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { logLead } = require('../lib/sheet-log.js');
 
 function readRaw(req) {
   return new Promise((resolve) => {
@@ -67,6 +68,18 @@ module.exports = async function handler(req, res) {
   const text = (data.message || '새 견적 신청이 접수되었습니다.').toString().slice(0, 1000);
   // 알림톡 템플릿 치환값
   const v = (data.vars && typeof data.vars === 'object') ? data.vars : null;
+
+  // 구글시트에 먼저 영구 기록(문자 발송 성공 여부와 무관하게 리드를 남긴다). 실패해도 무시.
+  await logLead({
+    source: '선택형폼',
+    contactName: v ? (v['담당자'] || '') : '',
+    phone: v ? (v['연락처'] || '') : '',
+    region: v ? (v['지역'] || '') : '',
+    menu: v ? (v['내역'] || '') : '',
+    quote: v ? (v['금액'] || '') : '',
+    datetime: v ? (v['배식'] || '') : '',
+    note: v ? [v['문의'], v['전기'] ? ('전기: ' + v['전기']) : ''].filter(Boolean).join(' / ') : text,
+  });
 
   // 문자(LMS) 메시지
   function lmsMessage() {

@@ -6,6 +6,7 @@
 const { calculateQuote } = require('../lib/quote-engine.js');
 const { SYSTEM_KNOWLEDGE } = require('../lib/knowledge.js');
 const { sendLeadAlert } = require('../lib/lead-notify.js');
+const { logLead } = require('../lib/sheet-log.js');
 
 const MODEL = 'claude-sonnet-4-6'; // 상담용. 비용을 더 줄이려면 claude-haiku-4-5-20251001
 
@@ -71,6 +72,19 @@ async function handleLead(input) {
   if (p.note) lines.push(`문의: ${p.note}`);
 
   const res = await sendLeadAlert(lines.join('\n'));
+
+  // 구글시트에도 영구 기록(문자를 놓쳐도 리드를 잃지 않기 위함). 실패해도 무시.
+  await logLead({
+    source: '대화형챗봇',
+    contactName: p.contactName || '',
+    phone: p.phone || '',
+    region: p.region || '',
+    menu: p.menu || '',
+    quote: p.quote || '',
+    datetime: p.datetime || '',
+    note: p.note || '',
+  });
+
   // AI에게는 항상 접수됨을 알려 고객에게 안심 안내하도록 한다(발송 실패해도 대화상 리드는 남음).
   return res.ok
     ? { status: 'submitted', message: '담당자에게 상담 신청이 전달되었습니다.' }
